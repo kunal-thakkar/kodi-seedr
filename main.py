@@ -124,6 +124,14 @@ if 'access_token' in settings:
     elif mode[0] == 'folder':
         folder_id = args['folder_id'][0]
         data = call_api('/folder/' + folder_id, settings['access_token'])
+    elif mode[0] == 'play':
+        play_item = xbmcgui.ListItem()
+        play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        play_item.setPath(args['path'][0])
+        play_item.setContentLookup(False)
+        xbmcplugin.setResolvedUrl(addon_handle, True, listitem=play_item)
+        quit()
 
     if 'error' in data:
         get_access_token()
@@ -132,6 +140,14 @@ if 'access_token' in settings:
         elif mode[0] == 'folder':
             folder_id = args['folder_id'][0]
             data = call_api('/folder/' + folder_id, settings['access_token'])
+        elif mode[0] == 'play':
+            play_item = xbmcgui.ListItem()
+            play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+            play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+            play_item.setPath(args['path'][0])
+            play_item.setContentLookup(False)
+            xbmcplugin.setResolvedUrl(addon_handle, True, listitem=play_item)
+            quit()
 
     folders = data['folders']
     files = data['files']
@@ -158,7 +174,7 @@ if 'access_token' in settings:
             li.setProperty('IsPlayable', 'True')
             li.setInfo('video',infoLabels={'title': f['name']})
 
-            xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
+            xbmcplugin.addDirectoryItem(handle=addon_handle, url=build_url({'mode':'play','path':url}), listitem=li)
         elif f['play_audio'] is True:
             url = API_URL + '/media/mp3/' + str(f['folder_file_id']) + '?access_token=' + settings['access_token']
 
